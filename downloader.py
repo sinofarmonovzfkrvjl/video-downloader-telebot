@@ -1,6 +1,5 @@
 import yt_dlp
 import requests
-from bs4 import BeautifulSoup
 
 def VideoDownloader(url, output_path='.'):
     ydl_opts = {
