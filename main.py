@@ -1,12 +1,15 @@
-import telebot
+from telebot import TeleBot, types
 import requests
 import glob
 from os import remove
 from downloader import VideoDownloader, InstagramDownloader
+from keep_alive import keep_alive
 
 API_TOKEN = "7307034091:AAHS8DnWDo4aJaxLu_0jd3hZkRR5Lm-Xvdg"
 
-bot = telebot.TeleBot(API_TOKEN)
+keep_alive()
+
+bot = TeleBot(API_TOKEN)
 
 @bot.message_handler(commands=['start'])
 def command_start(message):
@@ -67,4 +70,4 @@ def handle_message(message):
 
 if __name__ == '__main__':
     print(f"[@{bot.get_me().username}] '{bot.get_me().full_name}' is started!")
-    bot.polling(none_stop=True)
+    bot.polling(none_stop=True, skip_pending=True, )
