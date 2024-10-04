@@ -3,25 +3,25 @@ import requests
 import glob
 from os import remove
 from downloader import VideoDownloader, InstagramDownloader
-from keep_alive import keep_alive
 
 API_TOKEN = "7307034091:AAHS8DnWDo4aJaxLu_0jd3hZkRR5Lm-Xvdg"
-
-keep_alive()
 
 bot = TeleBot(API_TOKEN)
 
 @bot.message_handler(commands=['start'])
-def command_start(message):
+def command_start(message: types.Message):
     bot.send_message(message.chat.id, f"Salom {message.from_user.full_name}\nmen youtube va instagramdan video yuklovchi botman")
 
 @bot.message_handler(func=lambda message: True)
-def handle_message(message):
+def handle_message(message: types.Message):
     if message.text.startswith(("https://youtube.com/", "https://www.youtube.com/", "https://youtu.be/", 
                                 "https://tiktok.com/", "https://www.tiktok.com/", "https://www.facebook.com/", 
                                 "https://www.facebook.com")):
         bot.send_message(message.chat.id, "Video yuklanmoqda...")
-        video = VideoDownloader(message.text)
+        try:
+            video = VideoDownloader(message.text)
+        except:
+            pass
         try:
             if video:
                 video_file = glob.glob("*.mp4")[0]
@@ -43,31 +43,26 @@ def handle_message(message):
     elif message.text.startswith(("https://www.instagram.com/", "https://instagram.com/")):
         bot.send_message(message.chat.id, "Video yuklanmoqda...")
         downloaded = InstagramDownloader(message.text)
-        response = requests.get(downloaded['url'])
-
-        if message.text.startswith("https://www.instagram.com/p/"):
-            with open("image.png", "wb") as f:
-                f.write(response.content)
+        if downloaded['type'] == "Video":
             try:
-                bot.send_photo(message.chat.id, open("image.png", 'rb'))
-                bot.send_message(message.chat.id, downloaded['description'])
-            except Exception as e:
-                bot.send_message(message.chat.id, f"Xatolik: {str(e)}")
-            finally:
-                remove("image.png")
-
-        elif message.text.startswith("https://www.instagram.com/reel/"):
-            with open("video.mp4", "wb") as f:
-                f.write(response.content)
+                bot.send_video(message.chat.id, downloaded['url'], caption=downloaded['Caption'])
+            except:
+                bot.send_video(message.chat.id, downloaded['url'])
+                bot.send_message(message.chat.id, downloaded['Caption'])
+        elif downloaded['type'] == "Image":
             try:
-                bot.send_video(message.chat.id, open("video.mp4", 'rb'))
-                bot.send_message(message.chat.id, downloaded['description'])
-            except Exception as e:
-                bot.send_message(message.chat.id, "Videoni yuklab bo'lmadi")
-            finally:
-                remove("video.mp4")
+                bot.send_photo(message.chat.id, downloaded['url'], caption=downloaded['Caption'])
+            except:
+                bot.send_photo(message.chat.id, downloaded['url'])
+                bot.send_message(message.chat.id, downloaded['Caption'])
+        else:
+            bot.send_message(5230484991, downloaded)
+
+def process_update(update):
+
+    bot.process_new_updates([update])
 
 
-if __name__ == '__main__':
-    print(f"[@{bot.get_me().username}] '{bot.get_me().full_name}' is started!")
-    bot.polling(none_stop=True, skip_pending=True, )
+# if __name__ == '__main__':
+#     print(f"[@{bot.get_me().username}] '{bot.get_me().full_name}' is started!")
+#     bot.polling(none_stop=True, skip_pending=True, )

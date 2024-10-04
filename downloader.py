@@ -22,6 +22,6 @@ def VideoDownloader(url, output_path='.'):
     return {"title": video_title, "id": video_id, "url": video_url, "uploader": uploader, "upload_date": upload_date, "duration": duration, "view_count": view_count, "like_count": like_count, "description": description, "tags": tags}
 
 def InstagramDownloader(url):
-    res = requests.get("https://instagram-video-downloader-api-8voc.onrender.com/api/v1/download?url=" + url)
+    res = requests.get("https://instagram-video-downloader-api-8voc.onrender.com/api/v2/download?url=" + url)
     return {"description": res.json()['description'], "url": f" https://instagram-video-downloader-api-8voc.onrender.com{res.json()['url']}"}
     

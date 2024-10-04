@@ -1,4 +1,1 @@
-pytelegrambotapi
-requests
-yt-dlp==2024.08.06
-flask
+c
