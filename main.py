@@ -3,9 +3,12 @@ import requests
 import glob
 from os import remove
 from downloader import VideoDownloader, InstagramDownloader
+from dotenv import load_dotenv
+import os
 
-API_TOKEN = "7307034091:AAHS8DnWDo4aJaxLu_0jd3hZkRR5Lm-Xvdg"
+load_dotenv()
 
+API_TOKEN = str(os.getenv("API_TOKEN"))
 bot = TeleBot(API_TOKEN)
 
 @bot.message_handler(commands=['start'])
