@@ -1,1 +1,5 @@
-c
+pytelegrambotapi
+requests
+python-dotenv
+yt-dlp
+flask
