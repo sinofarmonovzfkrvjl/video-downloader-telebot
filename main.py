@@ -17,16 +17,21 @@ def command_start(message: types.Message):
 
 @bot.message_handler(func=lambda message: True)
 def handle_message(message: types.Message):
+    global video
     if message.text.startswith(("https://youtube.com/", "https://www.youtube.com/", "https://youtu.be/", 
                                 "https://tiktok.com/", "https://www.tiktok.com/", "https://www.facebook.com/", 
                                 "https://www.facebook.com")):
+        global video
         bot.send_message(message.chat.id, "Video yuklanmoqda...")
         try:
+            global video
             video = VideoDownloader(message.text)
         except:
             pass
         try:
+            global video
             if video:
+                global video
                 video_file = glob.glob("*.mp4")[0]
                 video_info = f"Video nomi: {video.get('title')}\n" \
                              f"Video yuklagan shaxs: {video.get('uploader')}\n" \
