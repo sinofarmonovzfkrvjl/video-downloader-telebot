@@ -6,9 +6,12 @@ def VideoDownloader(url, output_path='.'):
         'outtmpl': f'{output_path}/video.mp4',
         'format': 'best[ext=mp4]',
     }
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        ydl.download([url])
-        info_dict = ydl.extract_info(url, download=True)
+    try:
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            ydl.download([url])
+            info_dict = ydl.extract_info(url, download=True)
+    except Exception as e:
+        print(e)
     video_title = info_dict.get('title')
     video_id = info_dict.get('id')
     video_url = info_dict.get('webpage_url')
@@ -23,5 +26,5 @@ def VideoDownloader(url, output_path='.'):
 
 def InstagramDownloader(url):
     res = requests.get("https://instagram-video-downloader-api-8voc.onrender.com/api/v2/download?url=" + url)
-    return {"description": res.json()['description'], "url": f" https://instagram-video-downloader-api-8voc.onrender.com{res.json()['url']}"}
-    
+    # return {"description": res.json()['description'], "url": f" https://instagram-video-downloader-api-8voc.onrender.com{res.json()['url']}"}
+    return True
