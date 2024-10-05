@@ -29,9 +29,7 @@ def handle_message(message: types.Message):
         except:
             pass
         try:
-            global video
             if video:
-                global video
                 video_file = glob.glob("*.mp4")[0]
                 video_info = f"Video nomi: {video.get('title')}\n" \
                              f"Video yuklagan shaxs: {video.get('uploader')}\n" \
