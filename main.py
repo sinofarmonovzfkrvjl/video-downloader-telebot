@@ -2,6 +2,7 @@ from telebot import TeleBot, types
 import requests
 from os import remove
 from dotenv import load_dotenv
+from keyboards import get_audio
 import os
 
 load_dotenv()
@@ -27,12 +28,12 @@ def set_token(message: types.Message):
 
 @bot.message_handler(func=lambda message: True)
 def handle_message(message: types.Message):
+    global response
     bot.send_message(message.chat.id, "Video yuklanmoqda...")
     token = open("token.txt", "r").read()
     if message.text.startswith(("https://www.instagram.com/reel/", "https://www.instagram.com/p/")):
         response = requests.get("https://full-downloader-api-zfkrvjl323.onrender.com/instagram1", params={"url": message.text, "token": token})
 
-        print(response.status_code)
         if response.status_code == 200:
             if response.json()['type'] == "Image":    
                 bot.send_photo(message.chat.id, response.json()['url'])
@@ -47,10 +48,16 @@ def handle_message(message: types.Message):
                 bot.send_message(message.chat.id, "Videoni yuklab bo'lmadi")
         else:
             bot.send_message(message.chat.id, "Videoni yuklab bo'lmadi")
+    
+    elif message.text.startswith(("https://www.youtube.com/watch?v=", "https://youtu.be/")):
+        response = requests.get("https://full-downloader-api-zfkrvjl323.onrender.com/youtube1", params={"url": message.text, "token": token})
+        
+        if response.status_code == 200:
+            bot.send_video(message.chat.id, response.json()['qualities'][0]['url'], caption=response.json()['metainfo']['title'], reply_markup=get_audio())
 
-    else:
-        print("[ERROR] - Invalid URL")
-
+@bot.callback_query_handler(func=lambda call: call.data == "download_voice")
+def send_audio(message: types.Message):
+    bot.send_audio(message.chat.id, response.json()['qualities'][2]['url'])
 
 bot.delete_webhook()
 print(f"[@{bot.get_me().username}] - '{bot.get_me().full_name}' started!")
