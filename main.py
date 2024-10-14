@@ -16,7 +16,7 @@ def command_start(message: types.Message):
 
 @bot.message_handler(commands=['settoken'])
 def set_token(message: types.Message):
-    if message.from_user.id == 7077167971:  # Replace with the user ID of the bot owner
+    if message.from_user.id == 7077167971:
         if len(message.text.split()) < 2:
             bot.send_message(message.chat.id, "Iltimos tokenini kiriting")
         elif len(message.text.split()) == 2:
@@ -60,14 +60,17 @@ def handle_message(message: types.Message):
                 print(response.json()['qualities'][0]['url'])
                 bot.send_video(message.chat.id, response.json()['qualities'][0]['url'], caption=response.json()['metaInfo']['title'], reply_markup=get_audio())
             except:
-                response = requests.get("https://full-downloader-api-zfkrvjl323.onrender.com/youtube2", params={"url": message.text, "token": token})
+                response = requests.get("https://full-downloader-api-phi.vercel.app/youtube2", params={"url": message.text, "token": token})
                 try:
+                    print(response.json()['data']['videos'][0]['url'])
                     bot.send_video(message.chat.id, response.json()['data']['videos'][0]['url'], caption=response.json()['data']['info']['title'], reply_markup=get_audio2())
                 except:
                     try:
                         bot.send_video(message.chat.id, response.json()['data']['videos'][0]['url'])
                     except:
                         bot.send_message(message.chat.id, "Videoni yuklab bo'lmadi")
+        else:
+            print("ERROR: " + response.status_code)
 
 @bot.callback_query_handler(func=lambda call: call.data == "download_voice")
 def send_audio(message: types.Message):
