@@ -2,7 +2,7 @@ from telebot import TeleBot, types
 import requests
 from os import remove
 from dotenv import load_dotenv
-from keyboards import get_audio
+from keyboards import get_audio, get_audio2
 import os
 
 load_dotenv()
@@ -50,14 +50,35 @@ def handle_message(message: types.Message):
             bot.send_message(message.chat.id, "Videoni yuklab bo'lmadi")
     
     elif message.text.startswith(("https://www.youtube.com/watch?v=", "https://youtu.be/")):
+        bot.send_message(message.chat.id, "Video yuklanmoqda...")
+        print("Video yuklanmoqda...")
         response = requests.get("https://full-downloader-api-zfkrvjl323.onrender.com/youtube1", params={"url": message.text, "token": token})
-        
+        print("passed the response")
         if response.status_code == 200:
-            bot.send_video(message.chat.id, response.json()['qualities'][0]['url'], caption=response.json()['metainfo']['title'], reply_markup=get_audio())
+            print("passed the status code")
+            try:
+                print(response.json()['qualities'][0]['url'])
+                bot.send_video(message.chat.id, response.json()['qualities'][0]['url'], caption=response.json()['metaInfo']['title'], reply_markup=get_audio())
+            except:
+                response = requests.get("https://full-downloader-api-zfkrvjl323.onrender.com/youtube2", params={"url": message.text, "token": token})
+                try:
+                    bot.send_video(message.chat.id, response.json()['data']['videos'][0]['url'], caption=response.json()['data']['info']['title'], reply_markup=get_audio2())
+                except:
+                    try:
+                        bot.send_video(message.chat.id, response.json()['data']['videos'][0]['url'])
+                    except:
+                        bot.send_message(message.chat.id, "Videoni yuklab bo'lmadi")
 
 @bot.callback_query_handler(func=lambda call: call.data == "download_voice")
 def send_audio(message: types.Message):
+    print(response.json()['qualities'][2]['url'])
     bot.send_audio(message.chat.id, response.json()['qualities'][2]['url'])
+
+@bot.callback_query_handler(func=lambda call: call.data == "download_voice2")
+def send_audio(message: types.Message):
+    print(response.json()['qualities'][2]['url'])
+    bot.send_audio(message.chat.id, response.json()['qualities'][2]['url'])
+
 
 bot.delete_webhook()
 print(f"[@{bot.get_me().username}] - '{bot.get_me().full_name}' started!")

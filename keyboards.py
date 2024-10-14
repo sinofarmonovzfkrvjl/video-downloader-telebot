@@ -7,3 +7,8 @@ def get_audio() -> InlineKeyboardMarkup:
     )
 
     return keyboard
+
+def get_audio2() -> InlineKeyboardMarkup:
+    keyboard = InlineKeyboardMarkup().add(
+        InlineKeyboardButton(text="ovozini yuklash", callback_data="download_voice2")
+    )
