@@ -32,7 +32,7 @@ def handle_message(message: types.Message):
     bot.send_message(message.chat.id, "Video yuklanmoqda...")
     token = open("token.txt", "r").read()
     if message.text.startswith(("https://www.instagram.com/reel/", "https://www.instagram.com/p/")):
-        response = requests.get("https://full-downloader-api-zfkrvjl323.onrender.com/instagram1", params={"url": message.text, "token": token})
+        response = requests.get("https://full-media-downloader-pro-zfkrvjl323.onrender.com/instagram1", params={"url": message.text, "token": token})
 
         if response.status_code == 200:
             if response.json()['type'] == "Image":    
@@ -46,9 +46,10 @@ def handle_message(message: types.Message):
                     bot.send_photo(message.chat.id, url)
             else:
                 bot.send_message(message.chat.id, "Videoni yuklab bo'lmadi")
+            bot.send_message(message.chat.id, f"Profile: {response.json()['Profile']}\nCaption: {response.json()['Caption']}")
         else:
             bot.send_message(message.chat.id, "Videoni yuklab bo'lmadi")
-    
+
     elif message.text.startswith(("https://www.youtube.com/watch?v=", "https://youtu.be/")):
         bot.send_message(message.chat.id, "Video yuklanmoqda...")
         print("Video yuklanmoqda...")
