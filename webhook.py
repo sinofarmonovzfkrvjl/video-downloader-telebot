@@ -29,4 +29,4 @@ def set_webhook():
 
 if __name__ == '__main__':
     set_webhook()  # Set the webhook when the script runs
-    app.run(host='0.0.0.0', port=9998)  # Change the port if needed
+    app.run(host='0.0.0.0', port=5050)  # Change the port if needed
